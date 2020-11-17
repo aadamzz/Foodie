@@ -12,7 +12,7 @@ Foodie is an app that allows you to add your favourite recipes and share them wi
 ### NPM packages used on back-end:
 - [cors](https://www.npmjs.com/package/cors)
 - [dotenv](https://www.npmjs.com/package/dotenv)
-- [express]((https://expressjs.com/)
+- [express](https://expressjs.com/)
 - [helmet](https://www.npmjs.com/package/helmet)
 - [mongoose](https://www.npmjs.com/package/mongoose)
 - [nodemon](https://www.npmjs.com/package/nodemon)
