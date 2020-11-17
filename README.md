@@ -1,5 +1,5 @@
 # [Foodie](https://dazzling-perlman-f5479e.netlify.app/) 🍴
-Foodie is an app that allows you to add your favourite recipes and share them with your friends.
+**Foodie** is an app that allows you to add your favourite recipes and share them with your friends. **New features comming soon.**
 
 ### Front-end created using [React](https://pl.reactjs.org/)
 ### Back-end created using [NodeJS](https://nodejs.org/en/) and [ExpressJS](https://expressjs.com/). Database is [MongoDB](https://www.mongodb.com/)
