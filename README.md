@@ -2,7 +2,7 @@
 Foodie is an app that allows you to add your favourite recipes and share them with your friends.
 
 ### Front-end created using [React](https://pl.reactjs.org/)
-### Back-end created using [NodeJS](https://nodejs.org/en/) [ExpressJS](https://expressjs.com/). Database is [MongoDB](https://www.mongodb.com/)
+### Back-end created using [NodeJS](https://nodejs.org/en/) and [ExpressJS](https://expressjs.com/). Database is [MongoDB](https://www.mongodb.com/)
 
 ### NPM packages used on front-end: 
 - [react-loader-spinner](https://www.npmjs.com/package/react-loader-spinner)
