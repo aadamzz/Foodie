@@ -6,6 +6,7 @@ import RecipeList from './layout/RecipeList'
 import Homepage from './layout/Homepage';
 import RecipeDetails from './layout/RecipeDetails';
 import NotFound from './layout/NotFound';
+import EditRecipe from './layout/EditRecipe';
 
 export const recipeDetailsData = createContext();
 
@@ -27,9 +28,10 @@ function App() {
         <Header />
         <Switch>
           <Route exact path="/" component={Homepage} />
-          <Route path="/add" component={AddRecipe} />
+          <Route exact path="/add" component={AddRecipe} />
+          <Route exact path="/edit/:id" component={EditRecipe} />
           <Route exact path="/recipes/:name" component={RecipeList} />
-          <Route path="/recipes/details/:name" component={RecipeDetails} />\
+          <Route exact path="/recipes/details/:name" component={RecipeDetails} />
           <Route path="*" component={NotFound} />
         </Switch>
       </Router>

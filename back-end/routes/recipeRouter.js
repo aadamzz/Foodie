@@ -5,7 +5,7 @@ router.post('/new', async (req, res) => {
     try {
         let { name, description, category, ingredients, comments, image } = req.body;
 
-        if (!name || !description || !category || !ingredients || !image)
+        if (!name || !description || !category || !ingredients)
             return res
                 .status(500)
                 .json({ message: "Brak wymaganych danych" })
@@ -64,6 +64,37 @@ router.delete('/delete/:id', async (req, res) => {
         res
             .status(500)
             .json({ message: error.message })
+    }
+})
+
+router.get('/specificRecipe/:id', async (req, res) => {
+    try {
+        const specificRecipe = await newRecipe.findOne({ _id: req.params.id });
+        res.json(specificRecipe)
+
+    } catch (error) {
+        return res
+            .status(500)
+            .json({ error: error.message })
+    }
+})
+
+router.patch('/edit/:id', async (req, res) => {
+    try {
+        const { name, description, category, ingredients, comments, image } = req.body;
+        const editedRecipe = await newRecipe.updateOne(
+            { _id: req.params.id },
+            {
+                $set: {
+                    name, description, category, ingredients, comments, image
+                }
+            }
+        )
+        res.json({ message: "pomyslnie edytowano", editedRecipe })
+    } catch (error) {
+        return res
+            .status(500)
+            .json({ error: error.message })
     }
 })
 

@@ -3,8 +3,22 @@ import Ingredients from '../components/Ingredients';
 import { API } from '../API';
 import Loader from 'react-loader-spinner';
 import PrepSteps from '../components/PrepSteps';
+import { useQuery } from 'react-query';
+import { useHistory } from 'react-router-dom'
 
-function AddRecipe() {
+function AddRecipe({ match }) {
+
+    const getData = async (key, id) => {
+        try {
+            const response = await fetch(`${API}recipe/specificRecipe/${id}`);
+            return await response.json();
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
     const [query, setQuery] = useState({
         title: "",
         description: "",
@@ -12,13 +26,16 @@ function AddRecipe() {
         ingredient: "",
         comments: ""
     });
+
+    const { data, status } = useQuery(['edit-recipe', match.params.id], getData)
     const [ingredientList, setIngredientList] = useState([]);
     const [preparationSteps, setPreparationSteps] = useState([]);
     const [errors, setErrors] = useState("");
     const [image, setImage] = useState();
     const [preview, setPreview] = useState();
     const [loader, setLoader] = useState(false);
-    const [added, setAdded] = useState(false);
+    const history = useHistory();
+
 
     const fileInputRef = useRef();
 
@@ -26,7 +43,7 @@ function AddRecipe() {
         setQuery({ ...query, [event.currentTarget.name]: event.currentTarget.value });
     }
 
-    const addNewRecipe = async () => {
+    const addNewRecipe = async id => {
         setErrors("");
         if (!query.title) {
             setErrors("Uzupełnij wymagane pola.");
@@ -44,8 +61,9 @@ function AddRecipe() {
             setErrors("Nazwa potrawy powinna byc dłuższa niż trzy znaki.");
             return;
         }
+
         const config = {
-            method: "POST",
+            method: "PATCH",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -63,13 +81,8 @@ function AddRecipe() {
         setLoader(true);
 
         try {
-            const response = await fetch(`${API}recipe/new`, config);
+            const response = await fetch(`${API}recipe/edit/${id}`, config);
             const data = await response.json();
-            if (data.message === "Przepis z podaną nazwą już istnieje.") {
-                setErrors(data.message);
-                setLoader(false);
-                return;
-            }
             setQuery({
                 title: "",
                 description: "",
@@ -77,11 +90,14 @@ function AddRecipe() {
                 ingredient: "",
                 comments: ""
             });
+            if (data.message === "Przepis z podaną nazwą już istnieje.") {
+                setErrors(data.message)
+                return;
+            }
             setLoader(false);
             setIngredientList([]);
-            setPreparationSteps([]);
             setPreview();
-            setAdded(true);
+            history.push(`/recipes/${query.category}`);
         } catch (error) {
             setLoader(false);
         }
@@ -126,17 +142,29 @@ function AddRecipe() {
         } else setPreview(null);
     }, [image])
 
+    useEffect(() => {
+        if (data) {
+            setQuery({
+                title: data.name,
+                category: data.category,
+                comments: data.comments
+            })
+
+            setIngredientList(data.ingredients);
+            setPreparationSteps(data.description);
+            setPreview(data.image)
+        }
+    }, [data])
+
+    if (status === "loading" || !data) return <Loader
+        className="flex justify-center mt-8"
+        type="Oval"
+        color="#fff"
+        height={55}
+        width={55}
+    />
     return (
         <div className="my-6 mx-auto w-11/12 rounded-md min-h-full bg-gray-800 text-white p-4">
-            {
-                added && (
-                    <div className="flex items-center justify-center gap-6 mt-4 mb-6">
-                        <span role="img" aria-label="emoji" className="text-3xl md:text-5xl">🎉</span>
-                        <h1 className="text-2xl text-center md:text-4xl"> Dodano nowy przepis </h1>
-                        <span role="img" aria-label="emoji" className="text-3xl md:text-5xl">🎉</span>
-                    </div>
-                )
-            }
             <form className="grid gap-6" onSubmit={event => event.preventDefault()}>
                 <input
                     className="bg-gray-700 rounded p-2 placeholder-white"
@@ -268,9 +296,9 @@ function AddRecipe() {
                     ) : (
                             <button
                                 className="rounded-md bg-gray-700 mt-8 py-2 md:py-4 text-md md:text-xl text-white"
-                                onClick={() => addNewRecipe()}
+                                onClick={() => addNewRecipe(match.params.id)}
                             >
-                                Dodaj przepis
+                                Edytuj przepis
                             </button>
                         )
                 }

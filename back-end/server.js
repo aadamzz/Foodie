@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 8080
 app.listen(PORT, () => console.log(`server is running at port: ${PORT}`));
 
 app.get('/', (req, res) => {
-    res.send("<h1>Welcome to Foodie API</h1>")
+    res.send("<h1>Welcome to recipe API</h1>")
 })
 
 //connecting to database

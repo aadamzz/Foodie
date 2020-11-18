@@ -1,1 +1,1 @@
-export const API = 'https://recipe-app-pwa.herokuapp.com/'
+export const API = 'https://recipe-app-pwa.herokuapp.com/';

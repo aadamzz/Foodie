@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import RecipeSearch from '../components/RecipeSearch'
 import { useQuery } from 'react-query'
 import { Link } from 'react-router-dom'
@@ -38,7 +38,7 @@ function RecipeList({ match }) {
 
     return (
         <div className="my-6 mx-auto w-11/12 rounded-md min-h-full bg-gray-800 text-white p-4">
-            <h2 className="text-xl md:text-2xl text-center">{switchIntoPolish(match.params.name)}</h2>
+            <h2 className="text-2xl md:text-3xl text-center">{switchIntoPolish(match.params.name)}</h2>
             <RecipeSearch response={{ data, setRecipeList }} />
             {
                 status === "success" ? (
@@ -50,29 +50,43 @@ function RecipeList({ match }) {
                                     key={index}
                                 >
                                     {
-                                        !image ? (null) : (<img
-                                            className="my-0 mx-auto w-32 h-32 md:w-40 md:h-40 rounded-lg"
-                                            src={image}
-                                            alt={`${name} recipe ${category}`}
-                                        />)
+                                        !image ? (
+                                            <div className="my-0 mx-auto w-32 h-32 md:w-40 md:h-40">
+                                                <img
+                                                    className="mx-full w-full h-full rounded-lg"
+                                                    src={`${process.env.PUBLIC_URL}/images/logo.png`}
+                                                    alt={`${name} recipe ${category}`}
+                                                />
+                                            </div>
+                                        ) : (
+                                                <div className="my-0 mx-auto w-32 h-32 md:w-40 md:h-40">
+                                                    <img
+                                                        className="mx-full w-full h-full rounded-lg"
+                                                        src={image}
+                                                        alt={`${name} recipe ${category}`}
+                                                    />
+                                                </div>
+                                            )
                                     }
                                     {
                                         name && (
-                                            <h3 className="text-center text-2xl font-bold md:mt-4 md:text-3xl">{name.charAt(0).toUpperCase() + name.slice(1)}</h3>
+                                            <h3 className="text-center text-2xl font-bold md:mt-4 md:text-3xl break-words">{name.charAt(0).toUpperCase() + name.slice(1)}</h3>
                                         )
                                     }
-                                    <ol className="list-decimal mt-2">
+                                    <ul className="mt-2">
                                         {
                                             ingredients && (
                                                 ingredients.map((ingredient, index) => (
                                                     <li
-                                                        className="text-md ml-10 md:text-xl md:ml-20"
+                                                        className="text-md md:text-xl text-center"
                                                         key={index}
-                                                    >{ingredient}</li>
+                                                    >
+                                                        <p className="my-0 mx-auto">{index + 1}. {ingredient}</p>
+                                                    </li>
                                                 ))
                                             )
                                         }
-                                    </ol>
+                                    </ul>
                                     <Link
                                         to={`/recipes/details/${name}`}
                                         onClick={() => passDataToDetails(name, description, category, ingredients, image, comments, _id)}
