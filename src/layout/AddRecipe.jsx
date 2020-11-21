@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import Ingredients from '../components/Ingredients';
 import { API } from '../API';
 import Loader from 'react-loader-spinner';
 import PrepSteps from '../components/PrepSteps';
+import { useUploadImage } from '../customHooks/useUploadImage';
+import RecipeImage from '../components/RecipeImage';
 
 function AddRecipe() {
     const [query, setQuery] = useState({
@@ -15,11 +17,11 @@ function AddRecipe() {
     const [ingredientList, setIngredientList] = useState([]);
     const [preparationSteps, setPreparationSteps] = useState([]);
     const [errors, setErrors] = useState("");
-    const [image, setImage] = useState();
-    const [preview, setPreview] = useState();
+
     const [loader, setLoader] = useState(false);
     const [added, setAdded] = useState(false);
 
+    const { imageSrc, setUploadImage, setImageSrc } = useUploadImage();
     const fileInputRef = useRef();
 
     const handleQuery = event => {
@@ -56,7 +58,7 @@ function AddRecipe() {
                 category: query.category,
                 ingredients: ingredientList,
                 comments: query.comments,
-                image: preview
+                image: imageSrc
             })
         }
 
@@ -80,7 +82,7 @@ function AddRecipe() {
             setLoader(false);
             setIngredientList([]);
             setPreparationSteps([]);
-            setPreview();
+            setImageSrc();
             setAdded(true);
         } catch (error) {
             setLoader(false);
@@ -115,16 +117,6 @@ function AddRecipe() {
         setPreparationSteps([...preparationSteps, step]);
         setQuery({ ...query, description: "" });
     }
-
-    useEffect(() => {
-        if (image) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result)
-            }
-            reader.readAsDataURL(image);
-        } else setPreview(null);
-    }, [image])
 
     return (
         <div className="my-6 mx-auto w-11/12 rounded-md min-h-full bg-gray-800 text-white p-4">
@@ -223,8 +215,8 @@ function AddRecipe() {
                     accept="image/*"
                     onChange={event => {
                         const file = event.target.files[0];
-                        if (file && file.type.substr(0, 5) === "image") setImage(file)
-                        else setImage(null);
+                        if (file && file.type.substr(0, 5) === "image") setUploadImage(file)
+                        else setUploadImage(null);
                     }}
                 />
                 <div
@@ -243,15 +235,8 @@ function AddRecipe() {
                         Dodaj zdjęcie
                     </button>
                 </div>
-                {preview ? (
-                    <div className="my-0 mx-auto w-36 mb-6">
-                        <img
-                            className="object-cover w-full h-auto cursor-pointer"
-                            src={preview}
-                            alt="food recipe"
-                            onClick={() => setPreview(null)}
-                        />
-                    </div>
+                {imageSrc ? (
+                    <RecipeImage removeImg={setImageSrc} src={imageSrc} />
                 ) :
                     (
                         null

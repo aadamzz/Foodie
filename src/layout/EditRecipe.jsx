@@ -5,19 +5,17 @@ import Loader from 'react-loader-spinner';
 import PrepSteps from '../components/PrepSteps';
 import { useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom'
+import { useUploadImage } from '../customHooks/useUploadImage';
+import RecipeImage from '../components/RecipeImage';
 
 function AddRecipe({ match }) {
-
     const getData = async (key, id) => {
         try {
             const response = await fetch(`${API}recipe/specificRecipe/${id}`);
             return await response.json();
 
-        } catch (error) {
-            console.log(error);
-        }
+        } catch (error) { }
     }
-
 
     const [query, setQuery] = useState({
         title: "",
@@ -31,13 +29,12 @@ function AddRecipe({ match }) {
     const [ingredientList, setIngredientList] = useState([]);
     const [preparationSteps, setPreparationSteps] = useState([]);
     const [errors, setErrors] = useState("");
-    const [image, setImage] = useState();
-    const [preview, setPreview] = useState();
     const [loader, setLoader] = useState(false);
-    const history = useHistory();
 
-
+    const { imageSrc, setUploadImage, setImageSrc } = useUploadImage();
     const fileInputRef = useRef();
+
+    const history = useHistory();
 
     const handleQuery = event => {
         setQuery({ ...query, [event.currentTarget.name]: event.currentTarget.value });
@@ -61,7 +58,6 @@ function AddRecipe({ match }) {
             setErrors("Nazwa potrawy powinna byc dłuższa niż trzy znaki.");
             return;
         }
-
         const config = {
             method: "PATCH",
             headers: {
@@ -74,12 +70,10 @@ function AddRecipe({ match }) {
                 category: query.category,
                 ingredients: ingredientList,
                 comments: query.comments,
-                image: preview
+                image: imageSrc
             })
         }
-
         setLoader(true);
-
         try {
             const response = await fetch(`${API}recipe/edit/${id}`, config);
             const data = await response.json();
@@ -96,7 +90,7 @@ function AddRecipe({ match }) {
             }
             setLoader(false);
             setIngredientList([]);
-            setPreview();
+            setImageSrc();
             history.push(`/recipes/${query.category}`);
         } catch (error) {
             setLoader(false);
@@ -133,16 +127,6 @@ function AddRecipe({ match }) {
     }
 
     useEffect(() => {
-        if (image) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result)
-            }
-            reader.readAsDataURL(image);
-        } else setPreview(null);
-    }, [image])
-
-    useEffect(() => {
         if (data) {
             setQuery({
                 title: data.name,
@@ -152,7 +136,7 @@ function AddRecipe({ match }) {
 
             setIngredientList(data.ingredients);
             setPreparationSteps(data.description);
-            setPreview(data.image)
+            setImageSrc(data.image)
         }
     }, [data])
 
@@ -251,8 +235,8 @@ function AddRecipe({ match }) {
                     accept="image/*"
                     onChange={event => {
                         const file = event.target.files[0];
-                        if (file && file.type.substr(0, 5) === "image") setImage(file)
-                        else setImage(null);
+                        if (file && file.type.substr(0, 5) === "image") setUploadImage(file)
+                        else setUploadImage(null);
                     }}
                 />
                 <div
@@ -271,15 +255,8 @@ function AddRecipe({ match }) {
                         Dodaj zdjęcie
                     </button>
                 </div>
-                {preview ? (
-                    <div className="my-0 mx-auto w-36 mb-6">
-                        <img
-                            className="object-cover w-full h-auto cursor-pointer"
-                            src={preview}
-                            alt="food recipe"
-                            onClick={() => setPreview(null)}
-                        />
-                    </div>
+                {imageSrc ? (
+                    <RecipeImage removeImg={setImageSrc} src={imageSrc} />
                 ) :
                     (
                         null

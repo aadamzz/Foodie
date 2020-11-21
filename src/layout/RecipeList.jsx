@@ -33,6 +33,8 @@ function RecipeList({ match }) {
                 return "Przekąski";
             case "dessert":
                 return "Desery"
+            default:
+                return null;
         }
     }
 
@@ -88,6 +90,7 @@ function RecipeList({ match }) {
                                         }
                                     </ul>
                                     <Link
+                                        className="text-white"
                                         to={`/recipes/details/${name}`}
                                         onClick={() => passDataToDetails(name, description, category, ingredients, image, comments, _id)}
                                     >

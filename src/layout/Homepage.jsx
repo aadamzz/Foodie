@@ -1,6 +1,7 @@
 import React from 'react'
 
-function Homepage() {
+function Homepage({ windowWidth }) {
+
     return (
         <div>
             <h1 className="text-white text-center text-xl mt-6 px-2 md:text-2xl tracking-wider leading-8">Witaj w aplikacji Foodie pozwalającej dodawać twoje ulubione przepisy</h1>

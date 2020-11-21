@@ -87,7 +87,7 @@ function RecipeDetails() {
                     className="border-2 p-2 border-dashed rounded-md duration-500 hover:bg-gray-600 mt-8 md:mb-4 md:ml-4"
                     onClick={() => setDeletePopUp(true)}>Usuń przepis</button>
                 <Link to={`/edit/${_id}`}
-                    className="border-2 p-2 border-dashed rounded-md duration-500 hover:bg-gray-600 mt-8 md:mb-4 md:ml-4">Edytuj przepis
+                    className="border-2 p-2 border-dashed rounded-md duration-500 hover:bg-gray-600 mt-8 md:mb-4 md:ml-4 text-white">Edytuj przepis
                 </Link>
             </div>
             {
