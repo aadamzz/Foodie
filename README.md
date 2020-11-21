@@ -19,6 +19,7 @@
 
 ### CSS Framework
 - [Tailwind](https://tailwindcss.com/)
+- [Bootstrap React](https://react-bootstrap.github.io/)
 
 ### Website deployed thanks to [Netlify](https://www.netlify.com/)
 ### Server side thanks to [Heroku](https://www.heroku.com/)
